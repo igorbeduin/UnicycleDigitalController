@@ -4,7 +4,7 @@ clear
 Ts = 0.033;
 
 % Tempo de simulacao
-t = 0:Ts:5;
+t = 0:Ts:30;
 
 % Trajetoria
 ganho = 1;
@@ -59,13 +59,13 @@ for k = 1:length(t)
     x_vel_ref = dtraj(1,k);
     y_vel_ref = dtraj(2,k);
     
-    %x_vel_ref  = (x_pos_ref - x_pos)/Ts;
-    %y_vel_ref  = (y_pos_ref - y_pos)/Ts;
+%     x_vel_ref  = (x_pos_ref - x_pos)/Ts;
+%     y_vel_ref  = (y_pos_ref - y_pos)/Ts;
     
     % Calculo dos estados (erros)
     z_e = [x_pos_ref - x_pos;
-           y_pos_ref - y_pos;
            x_vel_ref - x_vel;
+           y_pos_ref - y_pos;
            y_vel_ref - y_vel];
        
     % Calculo das aceleraçoes de referencia
