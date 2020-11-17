@@ -1,7 +1,7 @@
 clear
 
  Ts = 0.033; % Sampling time
- t = 0:Ts:5; % Simulation time
+ t = 0:Ts:30; % Simulation time
 
  % Reference
  ganho = 1;
@@ -22,7 +22,7 @@ clear
  A=[0,1;0,0];B=[0;1];C=[1,0];
  % State feedback controller
  mod = 2;
- cmp = 1;
+ cmp = 5;
  %desPoles = [-mod - cmp*1i, -mod + cmp*1i]; % Desired poles (of the controller)
  desPoles = [-1, -2]
  K = place(A, B, desPoles); % Control gains obtained by pole placement
@@ -42,7 +42,7 @@ clear
     % Error and control
     ez1 = zRef1 - z1;
     ez2 = zRef2 - z2;
-    uu = [K*ez1; K*ez2];% + [ddxRef(k); ddyRef(k)];
+    uu = [K*ez1; K*ez2]+ [ddxRef(k); ddyRef(k)];
     % Compute inputs to the robot
     F = [cos(q(3)), -v*sin(q(3)); ...
          sin(q(3)), v*cos(q(3))];
@@ -52,7 +52,7 @@ clear
     
     % Robot motion simulation
     dq = [u(1)*cos(q(3)); u(1)*sin(q(3)); u(2)];
-    noise = 0.00; % Set to experiment with noise (e.g. 0.001)
+    noise = 0.005; % Set to experiment with noise (e.g. 0.001)
     q = q + Ts*dq + randn(3,1)*noise; % Euler integration
     q(3) = wrapToPi(q(3)); % Map orientation angle to [-pi, pi]
     

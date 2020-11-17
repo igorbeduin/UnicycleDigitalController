@@ -63,8 +63,8 @@ for k = 1:length(t)
            y_vel_ref - y_vel];
       
     % Calculo das aceleraçoes de referencia
-    x_a_ref = x_vel_ref - x_vel;
-    y_a_ref = y_vel_ref - y_vel;
+    x_a_ref = (x_vel_ref - x_vel);
+    y_a_ref = (y_vel_ref - y_vel);
     
     % Lei de controle
     mid_u = K*z_e + [x_a_ref; y_a_ref];
@@ -85,6 +85,7 @@ for k = 1:length(t)
     dout_robot = robot_cinematic * robot_input;
     
     % "Leitura" dos estados do robô (integrando a saída)
+    noise = 0.00; % Set to experiment with noise (e.g. 0.001)
     out_robot = [x_pos + Ts*dout_robot(1);
                  y_pos + Ts*dout_robot(2);
                  theta + Ts*dout_robot(3)];
