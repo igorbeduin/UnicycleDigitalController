@@ -9,9 +9,7 @@ t = 0:Ts:30;
 % Trajetoria
 ganho = 1;
 freq = 2*pi/30;
-traj = [1 + ganho*sin(freq*t); 1 + ganho*sin(2*freq*t)];
-dtraj = [freq*ganho*cos(freq*t);2*freq*ganho*cos(2*freq*t)];
-ddtraj = [-freq^2*ganho*sin(freq*t); -4*freq^2*ganho*sin(2*freq*t)];
+traj = [1 + ganho*sin(freq*t); 1 + ganho*sin(8*freq*t)];
 
 % Definicao do sistema
 G = [0 1 0 0;
