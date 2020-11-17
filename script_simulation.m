@@ -99,7 +99,7 @@ end
 
 plot(traj(1,:), traj(2,:));
 hold on
-plot(robot_x_pos, robot_y_pos);
+plot(robot_x_pos, robot_y_pos, "o");
 hold off
 legend("Trajetoria de referencia", "Trajetoria do robo");
 
