@@ -53,39 +53,27 @@ for k = 1:length(t)
     % Calculo das referencias por loop
     x_pos_ref = traj(1,k);
     y_pos_ref = traj(2,k);
-    
-    x_vel_ref = dtraj(1,k);
-    y_vel_ref = dtraj(2,k);
-    
-    % x_vel_ref  = (x_pos_ref - x_pos)/Ts;
-    % y_vel_ref  = (y_pos_ref - y_pos)/Ts;
+    x_vel_ref  = (x_pos_ref - x_pos);
+    y_vel_ref  = (y_pos_ref - y_pos);
     
     % Calculo dos estados (erros)
     z_e = [x_pos_ref - x_pos;
            x_vel_ref - x_vel;
            y_pos_ref - y_pos;
            y_vel_ref - y_vel];
-       
+      
     % Calculo das aceleraçoes de referencia
-    x_a_ref = ddtraj(1,k);
-    y_a_ref = ddtraj(2,k);
-    
-    %x_a_ref = (x_vel_ref - x_vel)/Ts;
-    %y_a_ref = (y_vel_ref - y_vel)/Ts;
+    x_a_ref = x_vel_ref - x_vel;
+    y_a_ref = y_vel_ref - y_vel;
     
     % Lei de controle
     mid_u = K*z_e + [x_a_ref; y_a_ref];
     
     % Calculo da matriz F
     v = sqrt((x_vel)^2 + (y_vel)^2);
- 
     F = [cos(theta) -v*sin(theta);
-         sin(theta) v*cos(theta)];
-     
+         sin(theta) v*cos(theta)]; 
     final_u = F^(-1)*mid_u;
-    
-    x_vel = v*cos(theta);
-    y_vel = v*sin(theta);
     
     % Entrada no robo
     v = final_u(1)*Ts + v; % integra dv
