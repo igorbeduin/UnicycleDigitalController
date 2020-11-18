@@ -22,13 +22,14 @@ H = [0 0;
      0 0;
      0 1];
  
-C = [1;
-     1;
-     0];
+C = [1 1 0 0];
  
+discSys = c2d(ss(G,H,C,0), Ts);
+
 
 % Calculo da matriz de ganho K
 poles = [-1, -1, -2, -2];
+%K = place(discSys.A, discSys.B, poles);
 K = place(G, H, poles);
 
 % Condicao inicial
