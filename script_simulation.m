@@ -1,7 +1,7 @@
 clear
 
 % Tempo de amostragem
-Ts = 0.033;
+Ts = 0.0033;
 
 % Tempo de simulacao
 t = 0:Ts:30;
@@ -9,7 +9,7 @@ t = 0:Ts:30;
 % Trajetoria
 ganho = 1;
 freq = 2*pi/30;
-traj = [1 + ganho*sin(freq*t); 1 + ganho*sin(8*freq*t)];
+traj = [ganho*sin(freq*t); ganho*sin(2*freq*t)];
 
 % Definicao do sistema
 G = [0 1 0 0;
@@ -32,8 +32,8 @@ poles = [-1, -1, -2, -2];
 K = place(G, H, poles);
 
 % Condicao inicial
-i_pose = [0, 0, 0];
-i_vel = [(traj(1,2) - traj(1,1))/Ts, (traj(2,2) - traj(2,1))/Ts];
+i_pose = [-2, -3, 0];
+i_vel = [1, 1];
 
 % Set das variaveis do primeiro loop
 x_pos = i_pose(1);
@@ -42,19 +42,22 @@ theta = i_pose(3);
 x_vel = i_vel(1);
 y_vel = i_vel(2);
 
+x_vel_ref_prev = x_vel;
+y_vel_ref_prev = y_vel;
+
 robot_x_pos = [];
 robot_y_pos = [];
 
 % Loop de simulacao
-for k = 1:length(t)
+for k = 2:length(t)
     robot_x_pos = [robot_x_pos; x_pos];
     robot_y_pos = [robot_y_pos; y_pos];
     
     % Calculo das referencias por loop
     x_pos_ref = traj(1,k);
     y_pos_ref = traj(2,k);
-    x_vel_ref  = (x_pos_ref - x_pos);
-    y_vel_ref  = (y_pos_ref - y_pos);
+    x_vel_ref  = (x_pos_ref - traj(1,k-1))/Ts;
+    y_vel_ref  = (y_pos_ref - traj(2,k-1))/Ts;
     
     % Calculo dos estados (erros)
     z_e = [x_pos_ref - x_pos;
@@ -63,8 +66,9 @@ for k = 1:length(t)
            y_vel_ref - y_vel];
       
     % Calculo das aceleraçoes de referencia
-    x_a_ref = (x_vel_ref - x_vel);
-    y_a_ref = (y_vel_ref - y_vel);
+    x_a_ref = (x_vel_ref - x_vel_ref_prev)/Ts;
+    y_a_ref = (y_vel_ref - y_vel_ref_prev)/Ts;
+    
     
     % Lei de controle
     mid_u = K*z_e + [x_a_ref; y_a_ref];
@@ -92,15 +96,18 @@ for k = 1:length(t)
     
     x_vel = dout_robot(1);
     y_vel = dout_robot(2);
-    
+     
     x_pos = out_robot(1);
     y_pos = out_robot(2);
     theta = out_robot(3);
+    
+    x_vel_ref_prev = x_vel_ref;
+    y_vel_ref_prev = y_vel_ref;
 end
 
 plot(traj(1,:), traj(2,:));
 hold on
-plot(robot_x_pos, robot_y_pos, "o");
+plot(robot_x_pos, robot_y_pos);
 hold off
 legend("Trajetoria de referencia", "Trajetoria do robo");
 
