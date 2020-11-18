@@ -26,11 +26,18 @@ C = [1 1 0 0];
  
 discSys = c2d(ss(G,H,C,0), Ts);
 
+real = 1;
+im = 0;
 
 % Calculo da matriz de ganho K
-poles = [-1, -1, -2, -2];
-%K = place(discSys.A, discSys.B, poles);
-K = place(G, H, poles);
+cont_poles = [-real + im*1i, -real - im*1i, -2*real + im*1i, -2*real - im*1i];
+disc_poles = [pol2cart(im*Ts, abs(exp(-real*Ts)));
+              pol2cart(-im*Ts, abs(exp(-real*Ts)));
+              pol2cart(im*Ts, abs(exp(-2*real*Ts)));
+              pol2cart(-im*Ts, abs(exp(-2*real*Ts)))]
+
+Kc = place(G, H, cont_poles);
+Kd = place(discSys.A, discSys.B, disc_poles);
 
 % Condicao inicial
 i_pose = [-2, -3, 0];
@@ -72,7 +79,7 @@ for k = 2:length(t)
     
     
     % Lei de controle
-    mid_u = K*z_e + [x_a_ref; y_a_ref];
+    mid_u = Kc*z_e + [x_a_ref; y_a_ref];
     
     % Calculo da matriz F
     v = sqrt((x_vel)^2 + (y_vel)^2);
