@@ -28,7 +28,7 @@ C = [1;
  
 
 % Calculo da matriz de ganho K
-poles = [-1+1i, -1-1i, -2+2*i, -2-2*i];
+poles = [-1, -1, -2, -2];
 K = place(G, H, poles);
 
 % Condicao inicial
