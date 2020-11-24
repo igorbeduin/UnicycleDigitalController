@@ -9,7 +9,12 @@ t = 0:Ts:30;
 % Limite fisico robo
 R = 0.05; %raio da roda = 5cm
 L = 0.1; %distancia entre as rodas = 10cm
-wrodas_lim = 1.2/R;
+wrodas_lim = 1.2/R
+
+% Media movel
+beta = 1;
+noise = 0.00; % Set to experiment with noise (e.g. 0.001)
+
 % Trajetoria
 ganho = 1;
 freq = 2*pi/30;
@@ -38,7 +43,7 @@ cont_poles = [-real + im*1i, -real - im*1i, -2*real + im*1i, -2*real - im*1i];
 disc_poles = [pol2cart(im*Ts, abs(exp(-real*Ts)));
               pol2cart(-im*Ts, abs(exp(-real*Ts)));
               pol2cart(im*Ts, abs(exp(-2*real*Ts)));
-              pol2cart(-im*Ts, abs(exp(-2*real*Ts)))]
+              pol2cart(-im*Ts, abs(exp(-2*real*Ts)))];
 
 Kc = place(G, H, cont_poles);
 Kd = place(discSys.A, discSys.B, disc_poles);
@@ -125,28 +130,44 @@ for k = 2:length(t)
                        sin(theta) 0;
                                 0 1];
     dout_robot = robot_cinematic * robot_input;
+    dout_robot = (dout_robot + randn(3,1)*noise); % adicionando noise pra simular erro de amostragem
     
     % "Leitura" dos estados do robô (integrando a saída)
-    noise = 0.00; % Set to experiment with noise (e.g. 0.001)
     out_robot = [x_pos + Ts*dout_robot(1);
                  y_pos + Ts*dout_robot(2);
                  theta + Ts*dout_robot(3)];
+    out_robot = (out_robot + randn(3,1)*noise); % adicionando noise pra simular erro de amostragem
+
     
-    x_vel = dout_robot(1);
-    y_vel = dout_robot(2);
+    x_vel = (dout_robot(1)*(1 + beta) + x_vel*(1 - beta))/2;
+    y_vel = (dout_robot(2)*(1 + beta) + y_vel*(1 - beta))/2;
      
-    x_pos = out_robot(1);
-    y_pos = out_robot(2);
-    theta = out_robot(3);
+    x_pos = (out_robot(1)*(1 + beta) + x_pos*(1 - beta))/2;
+    y_pos = (out_robot(2)*(1 + beta) + y_pos*(1 - beta))/2;
+    theta = (out_robot(3)*(1 + beta) + theta*(1 - beta))/2;
     
     x_vel_ref_prev = x_vel_ref;
     y_vel_ref_prev = y_vel_ref;
+    
 end
 
+figure
 plot(traj(1,:), traj(2,:));
 hold on
 plot(robot_x_pos, robot_y_pos);
 hold off
 legend("Trajetoria de referencia", "Trajetoria do robo");
+xlabel("x (m)")
+ylabel("y (m)")
+
+figure
+plot(signal_wR)
+hold on
+plot(signal_wL)
+hold off
+legend("Velocidade da roda direita", "Velocidade da roda esquerda");
+ylabel("velocidade angular da roda (rad/s)")
+xlabel("Tempo")
+
 
 
