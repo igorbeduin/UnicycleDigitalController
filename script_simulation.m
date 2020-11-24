@@ -6,6 +6,10 @@ Ts = 0.016; % tempo de loop do sistema da unball
 % Tempo de simulacao
 t = 0:Ts:30;
 
+% Limite fisico robo
+R = 0.05; %raio da roda = 5cm
+L = 0.1; %distancia entre as rodas = 10cm
+wrodas_lim = 1.2/R;
 % Trajetoria
 ganho = 1;
 freq = 2*pi/30;
@@ -26,7 +30,7 @@ C = [1 1 0 0];
  
 discSys = c2d(ss(G,H,C,0), Ts);
 
-real = 1;
+real = 10;
 im = 0;
 
 % Calculo da matriz de ganho K
@@ -55,6 +59,10 @@ y_vel_ref_prev = y_vel;
 
 robot_x_pos = [];
 robot_y_pos = [];
+
+control_signal_v = [];
+signal_wR = [];
+signal_wL = [];
 
 % Loop de simulacao
 for k = 2:length(t)
@@ -90,6 +98,28 @@ for k = 2:length(t)
     % Entrada no robo
     v = final_u(1)*Ts + v; % integra dv
     w = final_u(2);
+    
+    % Limite fisico do robo
+    wR = (2*v + L*w)/2;
+    wL = (2*v - L*w)/2;
+        
+    if wR > wrodas_lim
+        wR = wrodas_lim;
+    end
+    
+    if wL > wrodas_lim
+        wL = wrodas_lim;
+    end
+   
+    signal_wR = [signal_wR; wR];
+    signal_wL = [signal_wL; wL];
+    
+    % transforma de volta da velocidade das rodas pro robô pra garantir veracidade do calculo
+    v = (wR + wL)/2; 
+    w = (wR - wL)/L;
+    
+    control_signal_v = [control_signal_v; v];
+    
     robot_input = [v; w];
     robot_cinematic = [cos(theta) 0;
                        sin(theta) 0;
