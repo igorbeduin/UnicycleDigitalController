@@ -1,7 +1,7 @@
 clear
 
 % Tempo de amostragem
-Ts = 0.0033;
+Ts = 0.016; % tempo de loop do sistema da unball
 
 % Tempo de simulacao
 t = 0:Ts:30;
