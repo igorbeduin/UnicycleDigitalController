@@ -1,10 +1,10 @@
 clear
 
 % Tempo de amostragem
-Ts = 0.016;
+Ts = 0.01;
 
 % Tempo de simulacao
-t = 0:Ts:30;
+t = 0:Ts:2;
 
 % Trajetoria
 ganho = 1;
@@ -58,7 +58,7 @@ robot_x_pos = [];
 robot_y_pos = [];
 
 % Loop de simulacao
-for k = 2:length(t)
+for k = 2:length(t)-1
     robot_x_pos = [robot_x_pos; x_pos];
     robot_y_pos = [robot_y_pos; y_pos];
     
@@ -68,6 +68,9 @@ for k = 2:length(t)
     x_vel_ref  = (x_pos_ref - traj(1,k-1))/Ts;
     y_vel_ref  = (y_pos_ref - traj(2,k-1))/Ts;
     
+    x_vel_ref_next = (traj(1,k+1) - traj(1,k))/Ts;
+    y_vel_ref_next = (traj(1,k+1) - traj(1,k))/Ts;
+    
     % Calculo dos estados (erros)
     z_e = [x_pos_ref - x_pos;
            x_vel_ref - x_vel;
@@ -75,8 +78,8 @@ for k = 2:length(t)
            y_vel_ref - y_vel];
       
     % Calculo das aceleraçoes de referencia
-    x_a_ref = (x_vel_ref - x_vel_ref_prev)/Ts;
-    y_a_ref = (y_vel_ref - y_vel_ref_prev)/Ts;
+    x_a_ref = (x_vel_ref_next - x_vel_ref)/Ts;
+    y_a_ref = (x_vel_ref_next - y_vel_ref)/Ts;
     
     
     % Lei de controle
@@ -110,13 +113,11 @@ for k = 2:length(t)
     y_pos = out_robot(2);
     theta = out_robot(3);
     
-    x_vel_ref_prev = x_vel_ref;
-    y_vel_ref_prev = y_vel_ref;
 end
 
 plot(t(1:length(t)),traj(2,:));
 hold on
-plot(t(1:length(t)-1), robot_y_pos);
+stairs(t(1:length(t)-2), robot_y_pos);
 hold off
 % legend("Trajetoria de referencia", "Trajetoria do robo");
 
