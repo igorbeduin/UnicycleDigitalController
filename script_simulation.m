@@ -1,4 +1,4 @@
-clear
+%clear
 
 % Tempo de amostragem
 Ts = 0.016; % tempo de loop do sistema da unball
@@ -7,8 +7,8 @@ Ts = 0.016; % tempo de loop do sistema da unball
 t = 0:Ts:30;
 
 % Limite fisico robo
-R = 0.05; %raio da roda = 5cm
-L = 0.1; %distancia entre as rodas = 10cm
+R = 0.03; %raio da roda = 3cm
+L = 0.075; %distancia entre as rodas = 7.5cm
 wrodas_lim = 1.2/R
 
 % Media movel
