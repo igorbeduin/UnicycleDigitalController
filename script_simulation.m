@@ -46,11 +46,11 @@ disc_poles = [pol2cart(im*Ts, abs(exp(-real*Ts)));
               pol2cart(-im*Ts, abs(exp(-2*real*Ts)))];
 
 Kc = place(G, H, cont_poles);
-Kd = place(discSys.A, discSys.B, disc_poles);
+Kd = place(discSys.A, discSys.B, disc_poles)
 
 % Condicao inicial
-i_pose = [-2, -3, 0];
-i_vel = [1, 1];
+i_pose = [0, 0, 0];
+i_vel = [0.5, 0.5];
 
 % Set das variaveis do primeiro loop
 x_pos = i_pose(1);
