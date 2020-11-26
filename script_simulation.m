@@ -119,7 +119,7 @@ for k = 2:length(t)
     signal_wR = [signal_wR; wR];
     signal_wL = [signal_wL; wL];
     
-    % transforma de volta da velocidade das rodas pro robô pra garantir veracidade do calculo
+    % Transforma de volta da velocidade das rodas pro robô pra garantir veracidade do calculo
     v = (wR + wL)/2; 
     w = (wR - wL)/L;
     
@@ -151,23 +151,23 @@ for k = 2:length(t)
     
 end
 
-figure
+
+figure(1)
 plot(traj(1,:), traj(2,:));
 hold on
-plot(robot_x_pos, robot_y_pos);
+plot(robot_x_pos, robot_y_pos, "o",'MarkerSize', 4);
 hold off
 legend("Trajetoria de referencia", "Trajetoria do robo");
 xlabel("x (m)")
 ylabel("y (m)")
 
-figure
-plot(signal_wR)
+figure(2)
+stairs(t(1:length(t)-1), signal_wR)
 hold on
-plot(signal_wL)
+stairs(t(1:length(t)-1), signal_wL)
 hold off
 legend("Velocidade da roda direita", "Velocidade da roda esquerda");
 ylabel("velocidade angular da roda (rad/s)")
 xlabel("Tempo")
-
 
 
