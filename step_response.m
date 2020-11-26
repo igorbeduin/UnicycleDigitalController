@@ -1,16 +1,16 @@
 clear
 
 % Tempo de amostragem
-Ts = 0.01;
+Ts = 0.016;
 
 % Tempo de simulacao
-t = 0:Ts:2;
+t = 0:Ts:30;
 
 % Trajetoria
 ganho = 1;
 freq = 2*pi/30;
 % traj = [ganho*sin(freq*t); ganho*sin(2*freq*t)];
-traj = [ganho*ones(length(t)); ganho*ones(length(t))];
+traj = [ganho*ones(1,length(t)); ganho*ones(1,length(t))];
 
 % Definicao do sistema
 G = [0 1 0 0;
@@ -27,7 +27,7 @@ C = [1 1 0 0];
  
 discSys = c2d(ss(G,H,C,0), Ts);
 
-real = 10;
+real = 1;
 im = 0;
 
 % Calculo da matriz de ganho K
@@ -42,7 +42,7 @@ Kd = place(discSys.A, discSys.B, disc_poles);
 
 % Condicao inicial
 i_pose = [0, 0, 0];
-i_vel = [0.1, 0.1];
+i_vel = [1, 1];
 
 % Set das variaveis do primeiro loop
 x_pos = i_pose(1);
@@ -115,10 +115,10 @@ for k = 2:length(t)-1
     
 end
 
-plot(t(1:length(t)),traj(2,:));
+plot(traj(1,:),traj(2,:), "o");
 hold on
-stairs(t(1:length(t)-2), robot_y_pos);
+stairs(robot_x_pos, robot_y_pos);
 hold off
-% legend("Trajetoria de referencia", "Trajetoria do robo");
+%legend("Trajetoria de referencia", "Trajetoria do robo");
 
 
