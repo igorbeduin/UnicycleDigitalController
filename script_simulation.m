@@ -92,7 +92,7 @@ for k = 2:length(t)
     
     
     % Lei de controle
-    mid_u = Kc*z_e + [x_a_ref; y_a_ref];
+    mid_u = Kd*z_e + [x_a_ref; y_a_ref];
     
     % Calculo da matriz F
     v = sqrt((x_vel)^2 + (y_vel)^2);
